@@ -30,7 +30,7 @@ async def startup_event():
     logging.info('Database initiated.')
 
 
-@app.post("/employees")
+@app.post("/api/employees")
 async def add_employee_record(employee: Employee):
     """
     This route adds a new employee record to the database.
@@ -47,7 +47,7 @@ async def add_employee_record(employee: Employee):
     return {"message": "Employee added successfully!", "employee": employee}
 
 
-@app.get("/employees/")
+@app.get("/api/employees/")
 async def get_employee_record():
     """
     This route retrieves all records of employee from database.
@@ -64,7 +64,7 @@ async def get_employee_record():
     return {"data": employee_data}
 
 
-@app.get("/employees/{employee_id}")
+@app.get("/api/employees/{employee_id}")
 async def get_single_employee_record(employee_id: str):
     """
     This route retrieves an employee based on employee id from database.
@@ -86,7 +86,7 @@ async def get_single_employee_record(employee_id: str):
     return {"error": 'Employee record not found'}
 
 
-@app.delete("/employees/{employee_id}")
+@app.delete("/api/employees/{employee_id}")
 async def delete_employee_record(employee_id: str):
     """
     This route deletes an employee record based on their ID from the database.
@@ -105,7 +105,7 @@ async def delete_employee_record(employee_id: str):
             "Employee not found"}
 
 
-@app.put("/employees/{employee_id}/{column}/{new_value}")
+@app.put("/api/employees/{employee_id}/{column}/{new_value}")
 async def update_employee_detail(
         employee_id: str, column: str, new_value: Optional[str] = None,):
     """
