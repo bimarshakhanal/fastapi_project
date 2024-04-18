@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from typing import Optional
 import logging
 
 from database import create_connection, create_table
@@ -102,3 +103,30 @@ async def delete_employee_record(employee_id: str):
     return {"message": "Employee deleted successfully" if cursor.rowcount
             else
             "Employee not found"}
+
+
+@app.put("/employees/{employee_id}/{column}/{new_value}")
+async def update_employee_detail(
+        employee_id: str, column: str, new_value: Optional[str] = None,):
+    """
+    This route updates a specific detail (column) of an employee record based on their ID.
+    """
+    # Validate input data (optional)
+    # if column not in ("name", "department"):
+    #   return {"message": "Invalid column name"}
+
+    # Prepare and execute the UPDATE query
+    cursor = conn.cursor()
+    # Use parameter substitution to prevent SQL injection vulnerabilities
+    cursor.execute(f"""
+                   UPDATE employees SET {column} = ? WHERE id = ?
+                   """,
+                   (new_value, employee_id),
+                   )
+    conn.commit()
+
+    # Check if employee exists and return appropriate response
+    if cursor.rowcount:
+        return {"message": "Employee detail updated successfully"}
+    else:
+        return {"message": "Employee not found"}
