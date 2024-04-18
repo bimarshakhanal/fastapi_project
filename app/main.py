@@ -83,3 +83,22 @@ async def get_single_employee_record(employee_id: str):
         return {"data": employee_data}
 
     return {"error": 'Employee record not found'}
+
+
+@app.delete("/employees/{employee_id}")
+async def delete_employee_record(employee_id: str):
+    """
+    This route deletes an employee record based on their ID from the database.
+    """
+    # Prepare and execute the DELETE query
+    cursor = conn.cursor()
+    cursor.execute("""
+                   DELETE FROM employees WHERE id = ?
+                   """,
+                   (employee_id,))
+    conn.commit()
+
+    # Return a success message
+    return {"message": "Employee deleted successfully" if cursor.rowcount
+            else
+            "Employee not found"}
