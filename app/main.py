@@ -44,3 +44,42 @@ async def add_employee_record(employee: Employee):
 
     logging.info('New record added')
     return {"message": "Employee added successfully!", "employee": employee}
+
+
+@app.get("/employees/")
+async def get_employee_record():
+    """
+    This route retrieves all records of employee from database.
+    """
+    # Prepare and execute the SELECT query
+    cursor = conn.cursor()
+    cursor.execute("""
+                   SELECT * FROM employees
+                   """)
+
+    # Fetch the employee data (if any)
+    employee_data = cursor.fetchall()
+
+    return {"data": employee_data}
+
+
+@app.get("/employees/{employee_id}")
+async def get_single_employee_record(employee_id: str):
+    """
+    This route retrieves an employee based on employee id from database.
+    """
+    # Prepare and execute the SELECT query
+    cursor = conn.cursor()
+    cursor.execute("""
+                   SELECT * FROM employees WHERE id = ?
+                   """,
+                   (employee_id,))
+
+    # Fetch the employee data (if any)
+    employee_data = cursor.fetchone()
+
+    # Check if employee exists and return appropriate response
+    if employee_data:
+        return {"data": employee_data}
+
+    return {"error": 'Employee record not found'}
