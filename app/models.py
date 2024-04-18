@@ -1,8 +1,9 @@
-from pydantic import BaseModel, UUID, field_validator, UUID4
+from pydantic import BaseModel, field_validator
+from uuid import UUID, uuid4
 
 
 class Employee(BaseModel):
-    id: UUID = UUID4()
+    id: UUID = uuid4()
     name: str
     department: str
 

@@ -22,4 +22,4 @@ def create_table(connection):
       )
   ''')
     connection.commit()
-    connection.close()
+    # connection.close()
