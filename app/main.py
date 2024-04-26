@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from typing import Optional
 import logging
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 from database import create_connection, create_table
 from models import Employee
@@ -41,6 +41,7 @@ async def add_employee_record(employee: Employee):
     This route adds a new employee record to the database.
     """
     # Generate a new UUID for the employee ID
+
     cursor = conn.cursor()
     cursor.execute("""
                    INSERT INTO employees (id, name, department) VALUES (?, ?, ?)
@@ -65,7 +66,6 @@ async def get_employee_record():
 
     # Fetch the employee data (if any)
     employee_data = cursor.fetchall()
-
     return {"data": employee_data}
 
 
@@ -87,8 +87,8 @@ async def get_single_employee_record(employee_id: str):
     # Check if employee exists and return appropriate response
     if employee_data:
         return {"data": employee_data}
-
-    return {"error": 'Employee record not found'}
+    else:
+        raise HTTPException(status_code=404, detail="Employee not found")
 
 
 @app.delete("/api/employees/{employee_id}")
@@ -105,9 +105,10 @@ async def delete_employee_record(employee_id: str):
     conn.commit()
 
     # Return a success message
-    return {"message": "Employee deleted successfully" if cursor.rowcount
-            else
-            "Employee not found"}
+    if cursor.rowcount:
+        return {"message": "Employee deleted successfully"}
+    else:
+        raise HTTPException(status_code=404, detail="Employee not found")
 
 
 @app.put("/api/employees/{employee_id}/{column}/{new_value}")
@@ -134,4 +135,4 @@ async def update_employee_detail(
     if cursor.rowcount:
         return {"message": "Employee detail updated successfully"}
     else:
-        return {"message": "Employee not found"}
+        raise HTTPException(status_code=404, detail="Employee not found")
