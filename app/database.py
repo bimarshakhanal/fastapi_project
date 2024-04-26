@@ -1,3 +1,4 @@
+'''Create data base connection and create required tables'''
 import sqlite3
 
 DATABASE_URI = "data.db"

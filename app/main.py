@@ -1,6 +1,9 @@
-from fastapi import FastAPI
+'''Fast api application for employee management.'''
+from contextlib import asynccontextmanager
 from typing import Optional
 import logging
+
+from fastapi import FastAPI
 
 from database import create_connection, create_table
 from models import Employee
@@ -8,8 +11,17 @@ from models import Employee
 # define file to store log
 logging.basicConfig(filename='app.log', level=logging.DEBUG)
 
+
+@asynccontextmanager
+async def lifespan(app):
+    '''Lifecycle function'''
+    logging.info('Server Started')
+    create_table(connection=conn)
+    logging.info('Database initiated.')
+    yield
+
 # create instalnce of Fast API application
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 
 # create database connection
 conn = create_connection()
@@ -21,13 +33,6 @@ def root():
     This route gives information about this API service.
     """
     return {'message': 'Hello! This is employee record management service.'}
-
-
-@app.on_event("startup")
-async def startup_event():
-    logging.info('Server Started')
-    create_table(connection=conn)
-    logging.info('Database initiated.')
 
 
 @app.post("/api/employees")
