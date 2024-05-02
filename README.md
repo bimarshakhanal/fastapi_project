@@ -19,3 +19,13 @@ This project demonstrates a robust FastAPI application for managing employee dat
     cd app
     uvicorn main:app --reload
     ```
+
+### Dockerize this application
+1. Create docker image  
+    ```
+    docker build -t <image_name> .
+    ```
+2. Run dockerized application
+    ```
+    docker run -d --name <container_name> -p 80:<local_machine_port> <image_name> 
+    ```
