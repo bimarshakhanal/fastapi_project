@@ -35,7 +35,7 @@ def root():
     return {'message': 'Hello! This is employee record management service.'}
 
 
-@app.post("/api/employees")
+@app.post("/api/employees/")
 async def add_employee_record(employee: Employee):
     """
     This route adds a new employee record to the database.
